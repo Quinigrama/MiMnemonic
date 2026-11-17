@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sinapsis Violenta</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#152033">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sinapsis">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap">
@@ -151,6 +157,9 @@ textarea{font:1rem var(--f-body);color:var(--ink);background:var(--bg);border:1.
 .slot .naipe{border-radius:4px}
 @media (max-width:420px){.nedit{grid-template-columns:80px 1fr}.qcard{width:130px}}
 @media (prefers-reduced-motion:reduce){.naipe.flip{animation:none}}
+.install{font:700 .75rem var(--f-body);letter-spacing:.04em;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:999px;padding:4px 10px;cursor:pointer;margin-left:auto}
+.install:hover{color:var(--cons);border-color:var(--cons)}
+.install-help{margin:0;font-size:.85rem;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
 .got{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:30px}
 .got span{border:1.5px solid var(--ok);color:var(--ok);border-radius:999px;padding:2px 10px;font-weight:700}
 .score{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
@@ -173,7 +182,9 @@ textarea{font:1rem var(--f-body);color:var(--ink);background:var(--bg);border:1.
   <div class="brand">
     <h1>Sinapsis <b>Violenta</b></h1>
     <span class="sub">Código fonético · entrenamiento</span>
+    <button type="button" id="installBtn" class="install" hidden aria-label="Instalar la aplicación">↓ Instalar</button>
   </div>
+  <p class="install-help" id="installHelp" hidden>En iPhone o iPad: toca <b>Compartir</b> <span aria-hidden="true">⬆︎</span> y luego <b>Añadir a pantalla de inicio</b>.</p>
   <div class="tabs" role="tablist">
     <button role="tab" id="tab-code" aria-selected="true" data-tab="code">Código</button>
     <button role="tab" id="tab-game" aria-selected="false" data-tab="game">Sinapsis</button>
@@ -17991,6 +18002,26 @@ function finish(){
   document.getElementById("again").onclick=()=>start(S.mode);
   document.getElementById("back").onclick=showMenus;
 }
+</script>
+<script>
+/* ---------- Instalar como aplicación ---------- */
+(function(){
+  const btn=document.getElementById("installBtn"),help=document.getElementById("installHelp");
+  if("serviceWorker" in navigator){try{navigator.serviceWorker.register("sw.js").catch(()=>{})}catch(e){}}
+  const installed=matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+  if(installed)return;
+  let deferred=null;
+  /* Chrome y Edge (Android y ordenador) avisan cuando la app se puede instalar */
+  addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferred=e;btn.hidden=false});
+  /* iPhone y iPad no avisan: el botón muestra cómo hacerlo desde Safari */
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  if(ios&&location.protocol==="https:"&&"serviceWorker" in navigator)btn.hidden=false;
+  btn.addEventListener("click",async()=>{
+    if(deferred){deferred.prompt();try{await deferred.userChoice}catch(e){}deferred=null;btn.hidden=true}
+    else help.hidden=!help.hidden;
+  });
+  addEventListener("appinstalled",()=>{btn.hidden=true;help.hidden=true});
+})();
 </script>
 </body>
 </html>

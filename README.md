@@ -4,6 +4,15 @@ Entrenamiento de mnemotecnia en español con **código fonético propio**, inspi
 
 Es una única página web (`index.html`) que funciona sin conexión ni servidor: basta con abrirla en el navegador.
 
+## Instalar como aplicación
+
+Web: **https://quinigrama.github.io/MiMnemonic/**
+
+- **Android y ordenador (Chrome o Edge):** toca el botón **↓ Instalar** de la cabecera.
+- **iPhone o iPad (Safari):** el botón explica cómo hacerlo: **Compartir → Añadir a pantalla de inicio**.
+
+Una vez instalada funciona **sin conexión**. Al abrirla con internet se actualiza sola en segundo plano y los cambios se ven en la siguiente apertura.
+
 ## El código fonético
 
 | Cifra | Consonantes |
